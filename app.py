@@ -12,36 +12,13 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# 2. Adaptive CSS Injection for Light & Dark Mode
+# 2. Fully Adaptive CSS using Native Streamlit Variables
 st.markdown("""
     <style>
-    /* 1. Define CSS Variables for Light Mode (Default) */
-    :root {
-        --bg-gradient: linear-gradient(-45deg, #f8fafc, #e2e8f0, #cbd5e1, #f1f5f9);
-        --typewriter-gradient: -webkit-linear-gradient(#2563eb, #7c3aed);
-        --subtext-color: #475569;
-        --card-bg: rgba(255, 255, 255, 0.6);
-        --card-border: rgba(0, 0, 0, 0.1);
-        --card-hover-border: rgba(37, 99, 235, 0.5);
-        --card-hover-shadow: rgba(37, 99, 235, 0.2);
-    }
-
-    /* 2. Define CSS Variables for Dark Mode */
-    @media (prefers-color-scheme: dark) {
-        :root {
-            --bg-gradient: linear-gradient(-45deg, #0f172a, #1e1b4b, #000000, #172554);
-            --typewriter-gradient: -webkit-linear-gradient(#00f6ff, #5d00ff);
-            --subtext-color: #94a3b8;
-            --card-bg: rgba(255, 255, 255, 0.03);
-            --card-border: rgba(255, 255, 255, 0.1);
-            --card-hover-border: rgba(0, 246, 255, 0.5);
-            --card-hover-shadow: rgba(0, 246, 255, 0.3);
-        }
-    }
-
-    /* 3. Apply Animated Background */
+    /* 1. Animated Background using Streamlit's Native Theme Colors */
+    /* This ensures the background matches the toggle menu perfectly */
     .stApp {
-        background: var(--bg-gradient);
+        background: linear-gradient(-45deg, var(--background-color), var(--secondary-background-color), var(--background-color));
         background-size: 400% 400%;
         animation: gradientBG 15s ease infinite;
     }
@@ -52,7 +29,7 @@ st.markdown("""
         100% { background-position: 0% 50%; }
     }
 
-    /* 4. Typewriter Text Animation */
+    /* 2. Typewriter Text Animation */
     .typewriter-container {
         display: flex;
         justify-content: center;
@@ -63,12 +40,13 @@ st.markdown("""
     .typewriter h1 {
         font-family: monospace;
         overflow: hidden;
-        border-right: 0.15em solid;
+        border-right: 0.15em solid var(--primary-color);
         white-space: nowrap;
         margin: 0 auto;
         letter-spacing: 0.1em;
         font-size: 2.5rem !important;
-        background: var(--typewriter-gradient);
+        /* Gradient using the theme's primary color and purple */
+        background: -webkit-linear-gradient(var(--primary-color), #9333ea);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         animation: 
@@ -83,17 +61,17 @@ st.markdown("""
 
     @keyframes blink-caret {
         from, to { border-color: transparent }
-        50% { border-color: inherit; }
+        50% { border-color: var(--primary-color); }
     }
 
-    /* 5. Smooth Fade-In Subtext */
+    /* 3. Smooth Fade-In Subtext */
     .fade-in-text {
         text-align: center;
-        color: var(--subtext-color);
+        color: var(--text-color);
+        opacity: 0.7; /* Adapts cleanly to both light and dark backgrounds */
         font-size: 1.1rem;
         margin-bottom: 2rem;
         animation: fadeInUp 1.5s ease-out forwards;
-        opacity: 0;
         transform: translateY(20px);
     }
 
@@ -104,21 +82,20 @@ st.markdown("""
         }
     }
 
-    /* 6. Adaptive Glassmorphism for Metric Cards */
+    /* 4. Adaptive Glassmorphism for Metric Cards */
     div[data-testid="metric-container"] {
-        background: var(--card-bg);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid var(--card-border);
+        background: var(--secondary-background-color);
+        border: 1px solid rgba(128, 128, 128, 0.2);
         border-radius: 15px;
         padding: 25px;
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        transition: all 0.3s ease;
     }
     
     div[data-testid="metric-container"]:hover {
-        transform: translateY(-10px) scale(1.02);
-        box-shadow: 0 10px 30px -10px var(--card-hover-shadow);
-        border: 1px solid var(--card-hover-border);
+        transform: translateY(-5px) scale(1.02);
+        /* Creates a glowing shadow based on the current Streamlit primary color */
+        box-shadow: 0 0 15px var(--primary-color);
+        border: 1px solid var(--primary-color);
     }
     </style>
 """, unsafe_allow_html=True)
@@ -189,7 +166,6 @@ with col2:
     predict_btn = st.button("⚡ Initialize Prediction", type="primary", use_container_width=True)
 
 if predict_btn:
-    # Add an advanced-looking progress bar
     progress_text = "Processing data through model topology..."
     my_bar = st.progress(0, text=progress_text)
     
@@ -197,7 +173,7 @@ if predict_btn:
         time.sleep(0.01)
         my_bar.progress(percent_complete + 1, text=progress_text)
     time.sleep(0.3)
-    my_bar.empty() # Clear the progress bar when done
+    my_bar.empty() 
     
     try:
         # Generate prediction
@@ -207,7 +183,7 @@ if predict_btn:
         # Trigger native animation
         st.balloons()
         
-        # Display Glassmorphism metric
+        # Display matching metric card
         st.success("✅ Execution successful.")
         st.metric(
             label="🎯 Predicted Target Value", 
