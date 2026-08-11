@@ -12,15 +12,38 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# 2. Advanced CSS Injection
+# 2. Adaptive CSS Injection for Light & Dark Mode
 st.markdown("""
     <style>
-    /* 1. Animated Deep Gradient Background */
+    /* 1. Define CSS Variables for Light Mode (Default) */
+    :root {
+        --bg-gradient: linear-gradient(-45deg, #f8fafc, #e2e8f0, #cbd5e1, #f1f5f9);
+        --typewriter-gradient: -webkit-linear-gradient(#2563eb, #7c3aed);
+        --subtext-color: #475569;
+        --card-bg: rgba(255, 255, 255, 0.6);
+        --card-border: rgba(0, 0, 0, 0.1);
+        --card-hover-border: rgba(37, 99, 235, 0.5);
+        --card-hover-shadow: rgba(37, 99, 235, 0.2);
+    }
+
+    /* 2. Define CSS Variables for Dark Mode */
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --bg-gradient: linear-gradient(-45deg, #0f172a, #1e1b4b, #000000, #172554);
+            --typewriter-gradient: -webkit-linear-gradient(#00f6ff, #5d00ff);
+            --subtext-color: #94a3b8;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --card-hover-border: rgba(0, 246, 255, 0.5);
+            --card-hover-shadow: rgba(0, 246, 255, 0.3);
+        }
+    }
+
+    /* 3. Animated Deep Gradient Background */
     .stApp {
-        background: linear-gradient(-45deg, #0f172a, #1e1b4b, #000000, #172554);
+        background: var(--bg-gradient);
         background-size: 400% 400%;
         animation: gradientBG 15s ease infinite;
-        color: #ffffff;
     }
     
     @keyframes gradientBG {
@@ -29,7 +52,7 @@ st.markdown("""
         100% { background-position: 0% 50%; }
     }
 
-    /* 2. Typewriter Text Animation for Main Header */
+    /* 4. Typewriter Text Animation for Main Header */
     .typewriter-container {
         display: flex;
         justify-content: center;
@@ -38,15 +61,14 @@ st.markdown("""
     }
     
     .typewriter h1 {
-        color: #fff;
         font-family: monospace;
         overflow: hidden;
-        border-right: 0.15em solid #00f6ff;
+        border-right: 0.15em solid;
         white-space: nowrap;
         margin: 0 auto;
         letter-spacing: 0.1em;
         font-size: 2.5rem !important;
-        background: -webkit-linear-gradient(#00f6ff, #5d00ff);
+        background: var(--typewriter-gradient);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         animation: 
@@ -61,13 +83,13 @@ st.markdown("""
 
     @keyframes blink-caret {
         from, to { border-color: transparent }
-        50% { border-color: #00f6ff; }
+        50% { border-color: inherit; }
     }
 
-    /* 3. Smooth Fade-In Subtext */
+    /* 5. Smooth Fade-In Subtext */
     .fade-in-text {
         text-align: center;
-        color: #94a3b8;
+        color: var(--subtext-color);
         font-size: 1.1rem;
         margin-bottom: 2rem;
         animation: fadeInUp 1.5s ease-out forwards;
@@ -82,12 +104,12 @@ st.markdown("""
         }
     }
 
-    /* 4. Glassmorphism for Metric Cards */
+    /* 6. Adaptive Glassmorphism for Metric Cards */
     div[data-testid="metric-container"] {
-        background: rgba(255, 255, 255, 0.03);
+        background: var(--card-bg);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid var(--card-border);
         border-radius: 15px;
         padding: 25px;
         transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -95,18 +117,8 @@ st.markdown("""
     
     div[data-testid="metric-container"]:hover {
         transform: translateY(-10px) scale(1.02);
-        box-shadow: 0 10px 30px -10px rgba(0, 246, 255, 0.5);
-        border: 1px solid rgba(0, 246, 255, 0.5);
-    }
-    
-    /* Modify Streamlit base text elements for dark mode visibility */
-    .stMarkdown, p, label, .st-emotion-cache-16idsys p {
-        color: #e2e8f0 !important;
-    }
-    
-    /* Custom divider */
-    hr {
-        border-color: rgba(255, 255, 255, 0.1) !important;
+        box-shadow: 0 10px 30px -10px var(--card-hover-shadow);
+        border: 1px solid var(--card-hover-border);
     }
     </style>
 """, unsafe_allow_html=True)
@@ -177,7 +189,7 @@ with col2:
     predict_btn = st.button("⚡ Initialize Prediction", type="primary", use_container_width=True)
 
 if predict_btn:
-    # 7a. Add an advanced-looking progress bar
+    # Add an advanced-looking progress bar
     progress_text = "Processing data through model topology..."
     my_bar = st.progress(0, text=progress_text)
     
