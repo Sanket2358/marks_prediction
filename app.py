@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 import time
 
-# 1. Page Configuration (Must be the first command)
+# 1. Page Configuration
 st.set_page_config(
     page_title="AI Predictor Pro",
     page_icon="⚡",
@@ -12,19 +12,21 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# 2. Upgraded CSS with Floating Gradient Animation
+# 2. Upgraded CSS with Floating Title AND Output Animations
 st.markdown("""
     <style>
     /* Define Adaptive Colors for Light/Dark Mode */
     :root {
         --title-gradient: linear-gradient(45deg, #1e3a8a, #9333ea, #1e3a8a);
         --glow-shadow: rgba(147, 51, 234, 0.3);
+        --metric-glow: rgba(147, 51, 234, 0.6);
     }
     
     @media (prefers-color-scheme: dark) {
         :root {
             --title-gradient: linear-gradient(45deg, #00f6ff, #ff007f, #00f6ff);
             --glow-shadow: rgba(0, 246, 255, 0.4);
+            --metric-glow: rgba(0, 246, 255, 0.8);
         }
     }
 
@@ -47,26 +49,19 @@ st.markdown("""
         font-weight: 900;
         text-align: center;
         font-family: 'Segoe UI', system-ui, sans-serif;
-        
-        /* Gradient Setup */
         background: var(--title-gradient);
         background-size: 200% auto;
-        color: #ffffff; /* Fallback */
+        color: #ffffff;
         background-clip: text;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        
-        /* Animations */
         animation: 
             gradient-move 3s linear infinite, 
             float-up-down 4s ease-in-out infinite;
-            
-        /* Text Glow */
         text-shadow: 0px 5px 20px var(--glow-shadow);
-        
         margin-top: 1rem;
         margin-bottom: 0.5rem;
-        padding-top: 10px; /* Prevents text clipping */
+        padding-top: 10px; 
     }
 
     @keyframes gradient-move {
@@ -91,29 +86,49 @@ st.markdown("""
     }
 
     @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(15px);
-        }
-        to {
-            opacity: 0.8;
-            transform: translateY(0);
-        }
+        from { opacity: 0; transform: translateY(15px); }
+        to { opacity: 0.8; transform: translateY(0); }
     }
 
-    /* Animated Glassmorphism for Results */
+    /* --- NEW: Output Metric Animations --- */
+    
+    /* 1. Slide-up effect for the whole metric card when it appears */
     div[data-testid="metric-container"] {
         background: var(--secondary-background-color);
         border: 1px solid rgba(128, 128, 128, 0.2);
         border-radius: 15px;
         padding: 25px;
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        animation: slide-up-fade 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        transition: all 0.4s ease;
+    }
+    
+    @keyframes slide-up-fade {
+        from { opacity: 0; transform: translateY(30px) scale(0.95); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
     }
     
     div[data-testid="metric-container"]:hover {
         transform: translateY(-8px) scale(1.02);
         box-shadow: 0 10px 25px var(--glow-shadow);
         border: 1px solid var(--primary-color);
+    }
+
+    /* 2. Neon Pulse effect specifically on the output NUMBER (e.g., 47.32) */
+    div[data-testid="stMetricValue"] > div {
+        animation: number-pulse 2s infinite alternate;
+        font-weight: 800;
+    }
+
+    @keyframes number-pulse {
+        0% {
+            text-shadow: 0 0 5px var(--metric-glow);
+            transform: scale(1);
+        }
+        100% {
+            text-shadow: 0 0 20px var(--metric-glow), 0 0 30px var(--metric-glow);
+            transform: scale(1.03);
+            color: var(--primary-color);
+        }
     }
     </style>
 """, unsafe_allow_html=True)
@@ -132,7 +147,7 @@ except Exception as e:
     st.error(f"Error loading the model: {e}")
     st.stop()
 
-# 4. Animated Headers (Using robust <div> tags instead of <h1>)
+# 4. Animated Headers
 st.markdown('<div class="animated-title">AI Performance Engine</div>', unsafe_allow_html=True)
 st.markdown('<div class="fade-in-text">Powered by K-Nearest Neighbors Regression</div>', unsafe_allow_html=True)
 
@@ -192,6 +207,8 @@ if predict_btn:
         st.balloons()
         
         st.success("✅ Execution successful.")
+        
+        # The CSS injected above will automatically animate this metric when it renders
         st.metric(
             label="🎯 Predicted Target Value", 
             value=str(final_result), 
