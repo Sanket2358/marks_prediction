@@ -12,21 +12,21 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# 2. Upgraded CSS with Floating Title AND Output Animations
+# 2. CSS with Floating Title & Static Glow Output
 st.markdown("""
     <style>
     /* Define Adaptive Colors for Light/Dark Mode */
     :root {
         --title-gradient: linear-gradient(45deg, #1e3a8a, #9333ea, #1e3a8a);
         --glow-shadow: rgba(147, 51, 234, 0.3);
-        --metric-glow: rgba(147, 51, 234, 0.6);
+        --metric-glow: rgba(147, 51, 234, 0.5);
     }
     
     @media (prefers-color-scheme: dark) {
         :root {
             --title-gradient: linear-gradient(45deg, #00f6ff, #ff007f, #00f6ff);
             --glow-shadow: rgba(0, 246, 255, 0.4);
-            --metric-glow: rgba(0, 246, 255, 0.8);
+            --metric-glow: rgba(0, 246, 255, 0.6);
         }
     }
 
@@ -90,7 +90,7 @@ st.markdown("""
         to { opacity: 0.8; transform: translateY(0); }
     }
 
-    /* --- NEW: Output Metric Animations --- */
+    /* --- Output Metric Styling --- */
     
     /* 1. Slide-up effect for the whole metric card when it appears */
     div[data-testid="metric-container"] {
@@ -113,22 +113,11 @@ st.markdown("""
         border: 1px solid var(--primary-color);
     }
 
-    /* 2. Neon Pulse effect specifically on the output NUMBER (e.g., 47.32) */
+    /* 2. Static Neon Glow effect specifically on the output NUMBER (e.g., 47.32) */
     div[data-testid="stMetricValue"] > div {
-        animation: number-pulse 2s infinite alternate;
         font-weight: 800;
-    }
-
-    @keyframes number-pulse {
-        0% {
-            text-shadow: 0 0 5px var(--metric-glow);
-            transform: scale(1);
-        }
-        100% {
-            text-shadow: 0 0 20px var(--metric-glow), 0 0 30px var(--metric-glow);
-            transform: scale(1.03);
-            color: var(--primary-color);
-        }
+        color: var(--primary-color);
+        text-shadow: 0 0 15px var(--metric-glow), 0 0 30px var(--metric-glow);
     }
     </style>
 """, unsafe_allow_html=True)
@@ -208,7 +197,6 @@ if predict_btn:
         
         st.success("✅ Execution successful.")
         
-        # The CSS injected above will automatically animate this metric when it renders
         st.metric(
             label="🎯 Predicted Target Value", 
             value=str(final_result), 
