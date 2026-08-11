@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 import time
 
-# 1. Page Configuration (Must be the first Streamlit command)
+# 1. Page Configuration
 st.set_page_config(
     page_title="AI Predictor Pro",
     page_icon="⚡",
@@ -12,36 +12,12 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# 2. Adaptive CSS Injection for Light & Dark Mode
+# 2. Fixed Light Mode CSS Injection
 st.markdown("""
     <style>
-    /* 1. Define CSS Variables for Light Mode (Default) */
-    :root {
-        --bg-gradient: linear-gradient(-45deg, #f8fafc, #e2e8f0, #cbd5e1, #f1f5f9);
-        --typewriter-gradient: -webkit-linear-gradient(#2563eb, #7c3aed);
-        --subtext-color: #475569;
-        --card-bg: rgba(255, 255, 255, 0.6);
-        --card-border: rgba(0, 0, 0, 0.1);
-        --card-hover-border: rgba(37, 99, 235, 0.5);
-        --card-hover-shadow: rgba(37, 99, 235, 0.2);
-    }
-
-    /* 2. Define CSS Variables for Dark Mode */
-    @media (prefers-color-scheme: dark) {
-        :root {
-            --bg-gradient: linear-gradient(-45deg, #0f172a, #1e1b4b, #000000, #172554);
-            --typewriter-gradient: -webkit-linear-gradient(#00f6ff, #5d00ff);
-            --subtext-color: #94a3b8;
-            --card-bg: rgba(255, 255, 255, 0.03);
-            --card-border: rgba(255, 255, 255, 0.1);
-            --card-hover-border: rgba(0, 246, 255, 0.5);
-            --card-hover-shadow: rgba(0, 246, 255, 0.3);
-        }
-    }
-
-    /* 3. Animated Deep Gradient Background */
+    /* 1. Soft Light Animated Gradient Background */
     .stApp {
-        background: var(--bg-gradient);
+        background: linear-gradient(-45deg, #f8fafc, #eff6ff, #e0e7ff, #f1f5f9);
         background-size: 400% 400%;
         animation: gradientBG 15s ease infinite;
     }
@@ -52,7 +28,7 @@ st.markdown("""
         100% { background-position: 0% 50%; }
     }
 
-    /* 4. Typewriter Text Animation for Main Header */
+    /* 2. Typewriter Text - Vibrant & Readable */
     .typewriter-container {
         display: flex;
         justify-content: center;
@@ -63,12 +39,12 @@ st.markdown("""
     .typewriter h1 {
         font-family: monospace;
         overflow: hidden;
-        border-right: 0.15em solid;
+        border-right: 0.15em solid #2563eb;
         white-space: nowrap;
         margin: 0 auto;
         letter-spacing: 0.1em;
         font-size: 2.5rem !important;
-        background: var(--typewriter-gradient);
+        background: -webkit-linear-gradient(#2563eb, #9333ea);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         animation: 
@@ -83,13 +59,13 @@ st.markdown("""
 
     @keyframes blink-caret {
         from, to { border-color: transparent }
-        50% { border-color: inherit; }
+        50% { border-color: #2563eb; }
     }
 
-    /* 5. Smooth Fade-In Subtext */
+    /* 3. Smooth Fade-In Subtext - Dark Slate Gray */
     .fade-in-text {
         text-align: center;
-        color: var(--subtext-color);
+        color: #475569;
         font-size: 1.1rem;
         margin-bottom: 2rem;
         animation: fadeInUp 1.5s ease-out forwards;
@@ -104,21 +80,22 @@ st.markdown("""
         }
     }
 
-    /* 6. Adaptive Glassmorphism for Metric Cards */
+    /* 4. Glassmorphism for Metric Cards - Soft Light Shadows */
     div[data-testid="metric-container"] {
-        background: var(--card-bg);
+        background: rgba(255, 255, 255, 0.7);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
-        border: 1px solid var(--card-border);
+        border: 1px solid rgba(0, 0, 0, 0.05);
         border-radius: 15px;
         padding: 25px;
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        transition: all 0.4s ease;
     }
     
     div[data-testid="metric-container"]:hover {
-        transform: translateY(-10px) scale(1.02);
-        box-shadow: 0 10px 30px -10px var(--card-hover-shadow);
-        border: 1px solid var(--card-hover-border);
+        transform: translateY(-5px) scale(1.02);
+        box-shadow: 0 10px 20px rgba(37, 99, 235, 0.15);
+        border: 1px solid rgba(37, 99, 235, 0.3);
     }
     </style>
 """, unsafe_allow_html=True)
